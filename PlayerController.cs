@@ -21,7 +21,8 @@ public class PlayerController : MonoBehaviour {
 	private RaycastHit2D _raycastHitGrapple;
 
 	List<GameObject> arrowList;
-	public GameObject Arrow;
+	public GameObject ArrowPrefab;
+	//public Rigidbody2D ArrowPrefab;
 
 
 	void Awake()
@@ -90,8 +91,50 @@ public class PlayerController : MonoBehaviour {
 
 			//Rigidbody2D arrowInstance = Instantiate(
 
-			GameObject arrowInstance = (GameObject)Instantiate(Arrow, controllerPosition, Quaternion.identity);
-			arrowList.Add(arrowInstance);
+			//Rigidbody2D arrowInstance = Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity) as Rigidbody2D;
+			//arrowInstance.velocity = transform.TransformDirection(new Vector3(100,100));
+			GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
+			Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
+			arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75);
+
+			Quaternion targetRotation = Quaternion.LookRotation(mousePositionWorldVector - arrowRigidBody.transform.position);
+
+
+			float targetRotationFloat = Vector3.Angle(controllerPosition,mousePositionWorldVector);
+			if (mousePositionWorldVector.x > controllerPosition.x)
+			{
+
+			}
+			else
+			{
+				targetRotationFloat = 360 - targetRotationFloat;
+			}
+
+			Debug.Log(targetRotationFloat.ToString());
+
+			//arrowRigidBody.transform.rotation = Quaternion.Slerp(arrowRigidBody.transform.rotation, targetRotation, 100 * Time.deltaTime);
+
+			arrowRigidBody.rotation = targetRotationFloat;
+
+			//arrowRigidBody.transform.rotation = Quaternion.Euler(10);
+			//arrowRigidBody.transform.rotation = 
+			//arrowRigidBody.transform.rotation = 
+			//arrowRigidBody.transform.LookAt(mousePositionWorldVector);
+			//arrowRigidBody.
+
+
+			//arrowRigidBody.an
+			//arrowList.
+			//arrowInstance.AddForce(arrowInstance.transform.forward * 10);
+			//arrowList.Add(arrowInstance);
+
+			//Vector3 direction = arrowInstance.GetComponent<Arrow>();
+			//direction = new Vector3(100,100);
+
+			//arrowInstance.velocity = transform.TransformDirection(Vector3.forward * 10);
+
+			//arrowInstance.
+			//arrowList.Add(arrowInstance);
 			//arrowInstance.
 
 
@@ -112,6 +155,8 @@ public class PlayerController : MonoBehaviour {
 			//var ray = new Vector2( _controller.transform.position.x, _controller.transform.position.y);
 			//DrawRay( ray, rayDirection * rayDistance, Color.red );
 		}
+
+		//Debug.Log (arrowList.Count);
 	
 
 		if (Input.GetKeyDown (Jump) && _controller.isGrounded) 

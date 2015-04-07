@@ -6,10 +6,11 @@ public class arrowScript : MonoBehaviour {
 	
 	public float arrowSpeed = 5f;
 	public float arrowLifetime = 4.0f;
+	public Vector3 arrowDirection = new Vector3(0,0);
 
 	void Update () 
 	{
-		transform.Translate(Vector3.right * arrowSpeed * Time.deltaTime);
+		transform.Translate(arrowDirection * arrowSpeed * Time.deltaTime);
 		//Debug.Log ("Test");
 		//Destroy(this, arrowLifetime);
 	}
