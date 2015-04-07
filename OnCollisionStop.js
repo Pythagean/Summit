@@ -1,7 +1,7 @@
 
 function OnCollisionEnter(collision : Collision) {
 
-rigidbody.isKinematic = true;
+GetComponent.<Rigidbody>().isKinematic = true;
 
 
 

@@ -16,6 +16,6 @@ if(Input.GetButtonDown("Fire1"))
 //...spawn the grappling hook prefab
 var InstanceGrapple = Instantiate(prefabGrapple, transform.position, Quaternion.identity);
 //...shoot the spawned grappling hook with the forces set in the variables
-InstanceGrapple.rigidbody.AddForce(shootForceX,shootForceY,shootForceZ);
+InstanceGrapple.GetComponent.<Rigidbody>().AddForce(shootForceX,shootForceY,shootForceZ);
 }
 }

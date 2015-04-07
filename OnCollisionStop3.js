@@ -1,13 +1,13 @@
 
 function OnCollisionEnter(collision : Collision) {
 
-rigidbody.isKinematic = true;
+GetComponent.<Rigidbody>().isKinematic = true;
 
 
 
 bob = GameObject.Find("Shooter");
 //this makes him jump
-bob.rigidbody.AddForce(0,250,250);
+bob.GetComponent.<Rigidbody>().AddForce(0,250,250);
 
 
 
