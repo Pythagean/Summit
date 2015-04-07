@@ -98,51 +98,24 @@ public class PlayerController : MonoBehaviour {
 			arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75);
 
 			Quaternion targetRotation = Quaternion.LookRotation(mousePositionWorldVector - arrowRigidBody.transform.position);
-
-
-			float targetRotationFloat = Vector3.Angle(controllerPosition,mousePositionWorldVector);
-			if (mousePositionWorldVector.x > controllerPosition.x)
-			{
-
-			}
-			else
+			
+			//Attempt #1
+			/* float targetRotationFloat = Vector3.Angle(controllerPosition,mousePositionWorldVector);
+			if (mousePositionWorldVector.x < controllerPosition.x)
 			{
 				targetRotationFloat = 360 - targetRotationFloat;
 			}
-
 			Debug.Log(targetRotationFloat.ToString());
-
-			//arrowRigidBody.transform.rotation = Quaternion.Slerp(arrowRigidBody.transform.rotation, targetRotation, 100 * Time.deltaTime);
-
-			arrowRigidBody.rotation = targetRotationFloat;
-
-			//arrowRigidBody.transform.rotation = Quaternion.Euler(10);
-			//arrowRigidBody.transform.rotation = 
-			//arrowRigidBody.transform.rotation = 
+			arrowRigidBody.rotation = targetRotationFloat; */
+			
+			
+			//Attempt #2
+			arrowRigidBody.transform.rotation.eulerAngles = Vector3.Angle(controllerPosition,mousePositionWorldVector);
+			Debug.Log(arrowRigidBody.transform.rotation.eulerAngles.y);
+			
+			//Attempt #3
 			//arrowRigidBody.transform.LookAt(mousePositionWorldVector);
-			//arrowRigidBody.
-
-
-			//arrowRigidBody.an
-			//arrowList.
-			//arrowInstance.AddForce(arrowInstance.transform.forward * 10);
-			//arrowList.Add(arrowInstance);
-
-			//Vector3 direction = arrowInstance.GetComponent<Arrow>();
-			//direction = new Vector3(100,100);
-
-			//arrowInstance.velocity = transform.TransformDirection(Vector3.forward * 10);
-
-			//arrowInstance.
-			//arrowList.Add(arrowInstance);
-			//arrowInstance.
-
-
-			//arrowInstanc
-			//arrowInstance
-
-			//arrowList.Add(arrowInstance);
-			//arrowList
+			
 
 			var distanceBetweenMouseController = Vector3.Distance(mousePositionWorldVector,controllerPosition);
 			_raycastHitGrapple = Physics2D.Raycast(controllerPosition,(mousePositionWorldVector-controllerPosition),distanceBetweenMouseController,_controller.platformMask);
