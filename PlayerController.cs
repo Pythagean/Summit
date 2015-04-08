@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-
+		//Debug.Log ("Angle between mouse and controller: " + Vector3.Angle (new Vector3(_controller.transform.position.x,_controller.transform.position.y), Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y))));
 
 		if (Input.GetKeyDown (Grapple))
 		{
@@ -116,8 +116,12 @@ public class PlayerController : MonoBehaviour {
 
 			if (mousePositionWorldVector.x < controllerPosition.x)
 			{
-				Debug.Log(mousePositionWorldVector.x + " < " + controllerPosition.x);
+				Debug.Log("mouse: " + mousePositionWorldVector.x + " < controller: " + controllerPosition.x);
 				zRotation = 360 - zRotation;
+			}
+			else
+			{
+				Debug.Log("mouse: " + mousePositionWorldVector.x + " > controller: " + controllerPosition.x);
 			}
 
 			//float zRotation = Vector3.Angle(controllerPosition,mousePositionWorldVector);
