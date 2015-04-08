@@ -78,7 +78,14 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		//Debug.Log ("Angle between mouse and controller: " + Vector3.Angle (new Vector3(_controller.transform.position.x,_controller.transform.position.y), Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y))));
-
+		
+		Vector3 mousePositionVector1 = new Vector3(Input.mousePosition.x,Input.mousePosition.y);
+		var mousePositionWorldVector1 = Camera.main.ScreenToWorldPoint(mousePositionWorldVector1);
+		Vector3 controllerPosition1 = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
+		Debug.DrawRay(controllerPosition1,(mousePositionWorldVector-controllerPosition1),Color.red,1);
+		float zRotation1 = Vector3.Angle(controllerPosition1,mousePositionWorldVector1);
+		Debug.Log("Vector Angle from controller to mouse: " + zRotation1);
+		
 		if (Input.GetKeyDown (Grapple))
 		{
 			//camera = Camera.main;
