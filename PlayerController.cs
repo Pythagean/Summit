@@ -108,11 +108,24 @@ public class PlayerController : MonoBehaviour {
 			Debug.Log(targetRotationFloat.ToString());
 			arrowRigidBody.rotation = targetRotationFloat; */
 			
-			
+
 			//Attempt #2
-			arrowRigidBody.transform.rotation.eulerAngles = Vector3.Angle(controllerPosition,mousePositionWorldVector);
-			Debug.Log(arrowRigidBody.transform.rotation.eulerAngles.y);
-			
+			//arrowRigidBody.transform.rotation.eulerAngles = Vector3.Angle(controllerPosition,mousePositionWorldVector);
+			//arrowRigidBody.transform.rotation.eulerAngles = 
+			float zRotation = Vector3.Angle(controllerPosition,mousePositionWorldVector);
+
+			if (mousePositionWorldVector.x < controllerPosition.x)
+			{
+				Debug.Log(mousePositionWorldVector.x + " < " + controllerPosition.x);
+				zRotation = 360 - zRotation;
+			}
+
+			//float zRotation = Vector3.Angle(controllerPosition,mousePositionWorldVector);
+			arrowRigidBody.transform.eulerAngles = new Vector3(0,0,zRotation);
+
+			Debug.Log(arrowRigidBody.transform.rotation.eulerAngles.z);
+			//Debug.Log("controllerPosition: " + controllerPosition);
+			//Debug.Log("mousePositionWorldVector: " + mousePositionWorldVector);
 			//Attempt #3
 			//arrowRigidBody.transform.LookAt(mousePositionWorldVector);
 			
