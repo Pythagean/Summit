@@ -79,18 +79,35 @@ public class PlayerController : MonoBehaviour {
 
 		//Debug.Log ("Angle between mouse and controller: " + Vector3.Angle (new Vector3(_controller.transform.position.x,_controller.transform.position.y), Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,Input.mousePosition.y))));
 		
-		Vector3 mousePositionVector1 = new Vector3(Input.mousePosition.x,Input.mousePosition.y);
-		var mousePositionWorldVector1 = Camera.main.ScreenToWorldPoint(mousePositionWorldVector1);
+		Vector3 mousePositionVector1 = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
+		var mousePositionWorldVector1 = Camera.main.ScreenToWorldPoint(mousePositionVector1);
+		//Debug.Log ("mousePositionWorldVector1: " + mousePositionWorldVector1);
 		Vector3 controllerPosition1 = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
-		Debug.DrawRay(controllerPosition1,(mousePositionWorldVector-controllerPosition1),Color.red,1);
+		//Debug.DrawRay(controllerPosition1,(mousePositionWorldVector1-controllerPosition1),Color.red,1);
 		float zRotation1 = Vector3.Angle(controllerPosition1,mousePositionWorldVector1);
-		Debug.Log("Vector Angle from controller to mouse: " + zRotation1);
+
+		//Vector3 vectorDirection = (mousePositionWorldVector1 - controllerPosition1).normalized;
+		//Quaternion quaternionRotation = Quaternion.LookRotation (vectorDirection);
+		//_controller.transform.rotation = Quaternion.Slerp (_controller.transform.rotation, quaternionRotation, Time.deltaTime * 100);
+
+		//float zRotation2 = Vector3.Angle(mousePositionWorldVector1,controllerPosition1);
+		if (mousePositionWorldVector1.x < controllerPosition1.x)
+		{
+			//Debug.Log("mouse: " + mousePositionWorldVector1.x + " < controller: " + controllerPosition1.x);
+			zRotation1 = 360 - zRotation1;
+			//Debug.Log("zRotation1: " + zRotation1);
+		}
+		else
+		{
+			//Debug.Log("zRotation1: " + zRotation1);
+		}
+
 		
 		if (Input.GetKeyDown (Grapple))
 		{
 			//camera = Camera.main;
 			//Debug.Log("Mouse Click: x=" + Input.mousePosition.x.ToString() + ", y=" + Input.mousePosition.y.ToString());
-			Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y);
+			Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
 			var mousePositionWorldVector = Camera.main.ScreenToWorldPoint(mousePositionVector);
 			Vector3 controllerPosition = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
 			Debug.DrawRay(controllerPosition,(mousePositionWorldVector-controllerPosition),Color.green,1);
@@ -123,22 +140,37 @@ public class PlayerController : MonoBehaviour {
 
 			if (mousePositionWorldVector.x < controllerPosition.x)
 			{
-				Debug.Log("mouse: " + mousePositionWorldVector.x + " < controller: " + controllerPosition.x);
+				//Debug.Log("mouse: " + mousePositionWorldVector.x + " < controller: " + controllerPosition.x);
 				zRotation = 360 - zRotation;
 			}
 			else
 			{
-				Debug.Log("mouse: " + mousePositionWorldVector.x + " > controller: " + controllerPosition.x);
+				//Debug.Log("mouse: " + mousePositionWorldVector.x + " > controller: " + controllerPosition.x);
 			}
 
 			//float zRotation = Vector3.Angle(controllerPosition,mousePositionWorldVector);
-			arrowRigidBody.transform.eulerAngles = new Vector3(0,0,zRotation);
+			//arrowRigidBody.transform.eulerAngles = new Vector3(0,0,zRotation);
 
-			Debug.Log(arrowRigidBody.transform.rotation.eulerAngles.z);
+			Vector3 vectorDirection = (mousePositionWorldVector - controllerPosition).normalized;
+			Quaternion quaternionRotation = Quaternion.LookRotation (vectorDirection);
+			//arrowRigidBody.transform.rotation = Quaternion.Slerp (arrowRigidBody.transform.rotation, quaternionRotation, Time.deltaTime * 100); 
+
+			//Debug.Log(arrowRigidBody.transform.rotation.eulerAngles.z);
 			//Debug.Log("controllerPosition: " + controllerPosition);
 			//Debug.Log("mousePositionWorldVector: " + mousePositionWorldVector);
 			//Attempt #3
+			//arrowRigidBody.transform.forward = 
+
+			Vector3 bulletForward = arrowRigidBody.transform.localRotation * new Vector3(0,1,1);
 			//arrowRigidBody.transform.LookAt(mousePositionWorldVector);
+
+
+			//WORKING
+			Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
+			diff.Normalize();
+			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+			arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+
 			
 
 			var distanceBetweenMouseController = Vector3.Distance(mousePositionWorldVector,controllerPosition);

@@ -26,7 +26,7 @@ public class arrowScript : MonoBehaviour {
 
 	void Awake ()
 	{
-		Debug.Log ("Arrow created");
+		//Debug.Log ("Arrow created");
 
 	}
 
