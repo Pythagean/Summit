@@ -7,9 +7,9 @@ public class PlayerController : MonoBehaviour {
 	public KeyCode Left = KeyCode.A;
 	public KeyCode Right = KeyCode.D;
 	public KeyCode Jump = KeyCode.W;
-	public KeyCode Grapple = KeyCode.Mouse0;
-
-
+	public KeyCode ShootArrow = KeyCode.Mouse0;
+	public KeyCode ShootGrappleHook = KeyCode.Mouse1;
+	
 
 	public float gravity = -15f;
 	public float runSpeed = 8f;
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 	
-		if (Input.GetKeyDown (Grapple))
+		if (Input.GetKeyDown (ShootArrow || ShootGrappleHook))
 		{
 			//GetComponent<Camera>() = Camera.main;
 
@@ -84,19 +84,17 @@ public class PlayerController : MonoBehaviour {
 			var mousePositionWorldVector = Camera.main.ScreenToWorldPoint(mousePositionVector);
 			Vector3 controllerPosition = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
 			Debug.DrawRay(controllerPosition,(mousePositionWorldVector-controllerPosition),Color.green,1);
-			
-			//Debug.Log("Mouse Click: x=" + Input.mousePosition.x + ", y=" + Input.mousePosition.y + ", z: " + Input.mousePosition.z);
 
+			//Create Arrow Object
 			GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
-
-
-
+			
+			if (Input.GetKeyDown (ShootGrappleHook))
+			{
+				arrowInstance.GetComponent<arrowType>() = "grapple";
+			}
+			
 			Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
-
-			//arrowRigidBody.
 			arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75,ForceMode2D.Force);
-
-			//Debug.Log("velocity: " + arrowRigidBody.velocity);
 
 			//Rotate arrow to face position of mouse click
 			Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
@@ -105,13 +103,12 @@ public class PlayerController : MonoBehaviour {
 			arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
 			
 			//Calculating if arrow hits an obstacle
-			var distanceBetweenMouseController = Vector3.Distance(mousePositionWorldVector,controllerPosition);
+			/* var distanceBetweenMouseController = Vector3.Distance(mousePositionWorldVector,controllerPosition);
 			_raycastHitGrapple = Physics2D.Raycast(controllerPosition,(mousePositionWorldVector-controllerPosition),distanceBetweenMouseController,_controller.platformMask);
 			if (_raycastHitGrapple)
 			{
-				//Debug.Log("Hit");
 				arrowRigidBody.velocity = Vector3.zero;
-			}
+			} */
 
 		}
 
