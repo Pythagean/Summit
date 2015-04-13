@@ -11,8 +11,14 @@ public class arrowScript : MonoBehaviour {
 	public float arrowCollision = 1/2;
 	public LayerMask platformMask = 0;
 	
-	public arrowType = "normal";
+	public string arrowType = "normal";
 	private LineRenderer line;
+	private GameObject player;
+
+	// Line start width
+	private float startWidth = 0.05f;
+	// Line end width
+	private float endWidth = 0.05f;
 
 	//Rigidbody2D arrowRigidBody = getComponent<Rigidbody2D>();
 	public Vector3 velocity;
@@ -23,7 +29,8 @@ public class arrowScript : MonoBehaviour {
 	{
 		if (arrowType == "grapple")
 		{
-			player = GameObject.Find("Player");
+			player = GameObject.Find("Knight Transp");
+			Debug.Log(player.ToString());
 			//set starting point of line to this object, in this case the grappling hook prefab
 			line.SetPosition(0, transform.position);
 			//set the ending point of the line to the player
@@ -56,12 +63,13 @@ public class arrowScript : MonoBehaviour {
 	void Awake ()
 	{
 		//Debug.Log ("Arrow created");
-		line = this.gameObject.AddComponent(LineRenderer);
+		line = this.gameObject.AddComponent<LineRenderer>();
 		line.SetWidth(startWidth, endWidth);
 		line.SetVertexCount(2);
-		line.material.color = Color.red;
+		line.material.color = Color.blue;
 		//we need to see the line... 
-		line.GetComponent.<Renderer>().enabled = true;
+		//line.GetComponent.<Renderer>().enabled = true;
+		line.GetComponent<Renderer>().enabled = true;
 		
 		
 		

@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
 	{
+		//Debug.Log(name.ToString());
 		//Grabs current velocity of player
 		var velocity = _controller.velocity;
 
@@ -76,7 +77,7 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 	
-		if (Input.GetKeyDown (ShootArrow || ShootGrappleHook))
+		if (Input.GetKeyDown (ShootArrow) || Input.GetKeyDown(ShootGrappleHook))
 		{
 			//GetComponent<Camera>() = Camera.main;
 
@@ -90,7 +91,9 @@ public class PlayerController : MonoBehaviour {
 			
 			if (Input.GetKeyDown (ShootGrappleHook))
 			{
-				arrowInstance.GetComponent<arrowType>() = "grapple";
+				//arrowInstance.GetComponent<arr>() = "grapple";
+				arrowScript arrowScript = arrowInstance.GetComponent<arrowScript>();
+				arrowScript.arrowType = "grapple";
 			}
 			
 			Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
