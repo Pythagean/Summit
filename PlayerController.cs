@@ -15,11 +15,15 @@ public class PlayerController : MonoBehaviour {
 	public float runSpeed = 8f;
 	public float decaySpeed = 0.5f;
 	public float jumpHeight = 1.8f;
+	
+	public int numberOfGrapples = 5;
 
 	private CharacterController2D _controller;
 	private Animator _animator;
 
 	private RaycastHit2D _raycastHitGrapple;
+	
+	private bool grappling = false;
 
 	List<GameObject> arrowList;
 	public GameObject ArrowPrefab;
@@ -80,39 +84,47 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown (ShootArrow) || Input.GetKeyDown(ShootGrappleHook))
 		{
 			//GetComponent<Camera>() = Camera.main;
-
-			Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
-			var mousePositionWorldVector = Camera.main.ScreenToWorldPoint(mousePositionVector);
-			Vector3 controllerPosition = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
-			Debug.DrawRay(controllerPosition,(mousePositionWorldVector-controllerPosition),Color.green,1);
-
-			//Create Arrow Object
-			GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
-			
-			if (Input.GetKeyDown (ShootGrappleHook))
+			if (Input.GetKeyDown (ShootArrow) || grappling == false)
 			{
-				//arrowInstance.GetComponent<arr>() = "grapple";
-				arrowScript arrowScript = arrowInstance.GetComponent<arrowScript>();
-				arrowScript.arrowType = "grapple";
+				//Get positions of mouse/player and draw ray
+				Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
+				var mousePositionWorldVector = Camera.main.ScreenToWorldPoint(mousePositionVector);
+				Vector3 controllerPosition = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
+				Debug.DrawRay(controllerPosition,(mousePositionWorldVector-controllerPosition),Color.green,1);
+
+				//Create Arrow Object
+				GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
+				
+				//Shoot the grapple
+				if (Input.GetKeyDown (ShootGrappleHook))
+				{
+					arrowScript arrowScriptInstance = arrowInstance.GetComponent<arrowScript>();
+					arrowScriptInstance.arrowType = "grapple";
+					grappling = true;
+				}
+				
+				//Add force to arrow object
+				Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
+				arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75,ForceMode2D.Force);
+
+				//Rotate arrow to face position of mouse click
+				Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
+				diff.Normalize();
+				float zRotation = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+				arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
 			}
 			
-			Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
-			arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75,ForceMode2D.Force);
-
-			//Rotate arrow to face position of mouse click
-			Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
-			diff.Normalize();
-			float zRotation = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-			arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
-			
-			//Calculating if arrow hits an obstacle
-			/* var distanceBetweenMouseController = Vector3.Distance(mousePositionWorldVector,controllerPosition);
-			_raycastHitGrapple = Physics2D.Raycast(controllerPosition,(mousePositionWorldVector-controllerPosition),distanceBetweenMouseController,_controller.platformMask);
-			if (_raycastHitGrapple)
+			//If grapple button is clicked while already grappling
+			if (Input.GetKeyDown (ShootGrappleHook) || grappling == true)
 			{
-				arrowRigidBody.velocity = Vector3.zero;
-			} */
-
+				//Remove current grapple
+				var objects = GameObject.FindGameObjectsWithTag("Grapple"); //Will need to add tag to arrows
+				var objectCount = objects.Length;
+				foreach (var obj in objects) {
+					// whatever
+					Destroy (obj);
+				}
+			}
 		}
 
 		//Debug.Log (arrowList.Count);

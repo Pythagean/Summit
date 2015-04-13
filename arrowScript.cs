@@ -16,9 +16,8 @@ public class arrowScript : MonoBehaviour {
 	private GameObject player;
 
 	// Line start width
-	private float startWidth = 0.05f;
-	// Line end width
-	private float endWidth = 0.05f;
+	private float grappleStartWidth = 0.1f;
+	private float grappleEndWidth = 0.1f;
 
 	//Rigidbody2D arrowRigidBody = getComponent<Rigidbody2D>();
 	public Vector3 velocity;
@@ -64,9 +63,10 @@ public class arrowScript : MonoBehaviour {
 	{
 		//Debug.Log ("Arrow created");
 		line = this.gameObject.AddComponent<LineRenderer>();
-		line.SetWidth(startWidth, endWidth);
+		line.SetWidth(grappleStartWidth, grappleEndWidth);
 		line.SetVertexCount(2);
-		line.material.color = Color.blue;
+		//line.material.color = Color.blue;
+		line.SetColors(Color.black, Color.black);
 		//we need to see the line... 
 		//line.GetComponent.<Renderer>().enabled = true;
 		line.GetComponent<Renderer>().enabled = true;
