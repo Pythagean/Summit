@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour {
 	public float jumpHeight = 1.8f;
 	
 	public int numberOfGrapples = 5;
+	public int numberOfArrows = 20;
 
 	private CharacterController2D _controller;
 	private Animator _animator;
@@ -84,7 +85,7 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown (ShootArrow) || Input.GetKeyDown(ShootGrappleHook))
 		{
 			//GetComponent<Camera>() = Camera.main;
-			if (Input.GetKeyDown (ShootArrow) || grappling == false)
+			if ((Input.GetKeyDown (ShootArrow) || grappling == false) && numberOfArrows > 0)
 			{
 				//Get positions of mouse/player and draw ray
 				Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
@@ -94,13 +95,15 @@ public class PlayerController : MonoBehaviour {
 
 				//Create Arrow Object
 				GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
+				numberOfArrows -= 1;
 				
 				//Shoot the grapple
-				if (Input.GetKeyDown (ShootGrappleHook))
+				if (Input.GetKeyDown (ShootGrappleHook) && numberOfGrapples > 0)
 				{
 					arrowScript arrowScriptInstance = arrowInstance.GetComponent<arrowScript>();
 					arrowScriptInstance.arrowType = "grapple";
 					grappling = true;
+					numberOfGrapples -= 1;
 				}
 				
 				//Add force to arrow object
@@ -112,6 +115,15 @@ public class PlayerController : MonoBehaviour {
 				diff.Normalize();
 				float zRotation = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 				arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
+			}
+			
+			if (numberOfArrows == 0)
+			{
+				Debug.Log("Out of Arrows!");
+			}
+			if (numberOfGrapples == 0)
+			{
+				Debug.Log("Out of Rope!");
 			}
 			
 			//If grapple button is clicked while already grappling
