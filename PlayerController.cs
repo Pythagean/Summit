@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour {
 
 	private RaycastHit2D _raycastHitGrapple;
 	
-	private bool grappling = false;
+	public bool grappling = false;
 
 	List<GameObject> arrowList;
 	public GameObject ArrowPrefab;
@@ -84,15 +84,26 @@ public class PlayerController : MonoBehaviour {
 	
 		if (Input.GetKeyDown (ShootArrow) || Input.GetKeyDown(ShootGrappleHook))
 		{
-			//GetComponent<Camera>() = Camera.main;
-			if ((Input.GetKeyDown (ShootArrow) || grappling == false) && numberOfArrows > 0)
+			//If grapple button is clicked while already grappling
+			if (Input.GetKeyDown (ShootGrappleHook) && grappling == true)
+			{
+				//Remove current grapple
+				var objects = GameObject.FindGameObjectsWithTag("Grapple"); //Will need to add tag to arrows
+				var objectCount = objects.Length;
+				foreach (var obj in objects) {
+					// whatever
+					Destroy (obj);
+				}
+				grappling = false;
+			}
+			else if (grappling == false && numberOfArrows > 0)
 			{
 				//Get positions of mouse/player and draw ray
 				Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
 				var mousePositionWorldVector = Camera.main.ScreenToWorldPoint(mousePositionVector);
 				Vector3 controllerPosition = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
 				Debug.DrawRay(controllerPosition,(mousePositionWorldVector-controllerPosition),Color.green,1);
-
+				
 				//Create Arrow Object
 				GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
 				numberOfArrows -= 1;
@@ -100,8 +111,10 @@ public class PlayerController : MonoBehaviour {
 				//Shoot the grapple
 				if (Input.GetKeyDown (ShootGrappleHook) && numberOfGrapples > 0)
 				{
+					
 					arrowScript arrowScriptInstance = arrowInstance.GetComponent<arrowScript>();
 					arrowScriptInstance.arrowType = "grapple";
+					arrowScriptInstance.tag = "Grapple";
 					grappling = true;
 					numberOfGrapples -= 1;
 				}
@@ -109,13 +122,14 @@ public class PlayerController : MonoBehaviour {
 				//Add force to arrow object
 				Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
 				arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75,ForceMode2D.Force);
-
+				
 				//Rotate arrow to face position of mouse click
 				Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
 				diff.Normalize();
 				float zRotation = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 				arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
 			}
+		
 			
 			if (numberOfArrows == 0)
 			{
@@ -126,17 +140,7 @@ public class PlayerController : MonoBehaviour {
 				Debug.Log("Out of Rope!");
 			}
 			
-			//If grapple button is clicked while already grappling
-			if (Input.GetKeyDown (ShootGrappleHook) || grappling == true)
-			{
-				//Remove current grapple
-				var objects = GameObject.FindGameObjectsWithTag("Grapple"); //Will need to add tag to arrows
-				var objectCount = objects.Length;
-				foreach (var obj in objects) {
-					// whatever
-					Destroy (obj);
-				}
-			}
+
 		}
 
 		//Debug.Log (arrowList.Count);

@@ -1,6 +1,6 @@
-//using UnityEngine;
-//using System.Collections;
-//using System.Collections.Generic;
+import UnityEngine;
+import System.Collections;
+import System.Collections.Generic;
 
 public class PlayerController extends MonoBehaviour {
 
@@ -30,12 +30,12 @@ public class PlayerController extends MonoBehaviour {
 	//public int numberOfArrows = 20;
 	var numberOfArrows : int = 5;
 
-	private var _controller : CharacterController2D;
-	private var _animator : Animator;
+	var _controller;
+	var _animator;
 
 	private var _raycastHitGrapple : RaycastHit2D;
 	
-	private var grappling : boolean  = false;
+	var grappling : boolean  = false;
 
 	//List<GameObject> arrowList;
 	
@@ -44,8 +44,9 @@ public class PlayerController extends MonoBehaviour {
 
 	function Awake()
 	{
-		_controller = GetComponent<CharacterController2D> ();
-		_animator = GetComponent<Animator> ();
+		//_controller = GameObject.Find("CharacterController2D").GetComponent(CharacterController);
+		_controller = GetComponent(CharacterController2D);
+		_animator = GetComponent(Animator);
 		//arrowList = new List<GameObject>();
 	}
 
@@ -97,36 +98,48 @@ public class PlayerController extends MonoBehaviour {
 	
 		if (Input.GetKeyDown (ShootArrow) || Input.GetKeyDown(ShootGrappleHook))
 		{
-			//GetComponent<Camera>() = Camera.main;
-			if ((Input.GetKeyDown (ShootArrow) || grappling == false) && numberOfArrows > 0)
+			//If grapple button is clicked while already grappling
+			if (Input.GetKeyDown (ShootGrappleHook) || grappling == true)
+			{
+				//Remove current grapple
+				var objects = GameObject.FindGameObjectsWithTag("Grapple"); //Will need to add tag to arrows
+				var objectCount = objects.Length;
+				for (var obj in objects) {
+					// whatever
+					Destroy (obj);
+				}
+				grappling = false;
+			}
+			else if (grappling == false && numberOfArrows > 0)
 			{
 				//Get positions of mouse/player and draw ray
-				Vector3 mousePositionVector = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
+				var mousePositionVector = Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.nearClipPlane);
 				var mousePositionWorldVector = Camera.main.ScreenToWorldPoint(mousePositionVector);
-				Vector3 controllerPosition = new Vector3(_controller.transform.position.x,_controller.transform.position.y);
+				var controllerPosition = Vector3(_controller.transform.position.x,_controller.transform.position.y);
 				Debug.DrawRay(controllerPosition,(mousePositionWorldVector-controllerPosition),Color.green,1);
 
 				//Create Arrow Object
-				GameObject arrowInstance = (GameObject)Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
+				var arrowInstance : GameObject = Instantiate(ArrowPrefab, controllerPosition, Quaternion.identity);
 				numberOfArrows -= 1;
 				
 				//Shoot the grapple
 				if (Input.GetKeyDown (ShootGrappleHook) && numberOfGrapples > 0)
 				{
-					arrowScript arrowScriptInstance = arrowInstance.GetComponent<arrowScript>();
-					arrowScriptInstance.arrowType = "grapple";
+					//var arrowScriptInstance = arrowInstance.GetComponent(arrowScript);
+					//arrowScriptInstance.arrowType = "grapple";
+					//arrowScriptInstance.tag = "Grapple";
 					grappling = true;
 					numberOfGrapples -= 1;
 				}
 				
 				//Add force to arrow object
-				Rigidbody2D arrowRigidBody = arrowInstance.GetComponent<Rigidbody2D>();
+				var arrowRigidBody : Rigidbody2D = arrowInstance.GetComponent(Rigidbody2D);
 				arrowRigidBody.AddForce((mousePositionWorldVector-controllerPosition) * 75,ForceMode2D.Force);
 
 				//Rotate arrow to face position of mouse click
-				Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
+				var diff : Vector3 = Camera.main.ScreenToWorldPoint(Input.mousePosition) - arrowRigidBody.transform.position;
 				diff.Normalize();
-				float zRotation = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+				var zRotation : float = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 				arrowRigidBody.transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
 			}
 			
@@ -139,17 +152,7 @@ public class PlayerController extends MonoBehaviour {
 				Debug.Log("Out of Rope!");
 			}
 			
-			//If grapple button is clicked while already grappling
-			if (Input.GetKeyDown (ShootGrappleHook) || grappling == true)
-			{
-				//Remove current grapple
-				var objects = GameObject.FindGameObjectsWithTag("Grapple"); //Will need to add tag to arrows
-				var objectCount = objects.Length;
-				foreach (var obj in objects) {
-					// whatever
-					Destroy (obj);
-				}
-			}
+			
 		}
 
 		//Debug.Log (arrowList.Count);
@@ -168,7 +171,7 @@ public class PlayerController extends MonoBehaviour {
 		_controller.move(velocity * Time.deltaTime);
 	}
 
-	private function DrawRay( Vector3 start, Vector3 dir, Color color )
+	private function DrawRay( start : Vector3 , dir: Vector3  , color : Color   )
 	{
 		Debug.DrawRay( start, dir, color );
 	}
