@@ -30,7 +30,7 @@ public class arrowScript : MonoBehaviour {
 		{
 			player = GameObject.Find("Knight Transp");
 			//Debug.Log(player.ToString());
-			//set starting point of line to this object, in this case the grappling hook prefab
+			//set starting point of line to this object, in this case the arrow prefab
 			line.SetPosition(0, transform.position);
 			//set the ending point of the line to the player
 			line.SetPosition(1, player.transform.position);

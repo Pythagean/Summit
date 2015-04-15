@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	public KeyCode Jump = KeyCode.W;
 	public KeyCode ShootArrow = KeyCode.Mouse0;
 	public KeyCode ShootGrappleHook = KeyCode.Mouse1;
+	public KeyCode GrapplePull = KeyCode.Q;
 	
 
 	public float gravity = -15f;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour {
 	private RaycastHit2D _raycastHitGrapple;
 	
 	public bool grappling = false;
+	public bool grapplingHold = false;
 
 	List<GameObject> arrowList;
 	public GameObject ArrowPrefab;
@@ -81,6 +83,25 @@ public class PlayerController : MonoBehaviour {
 				velocity.x *= decaySpeed;
 			}
 		}
+		
+		if (Input.GetKey (GrapplePull)) 
+		{
+/* 			if (grapplingHold == true)
+			{
+				grapplingHold = false;
+			}
+			else
+			{
+				grapplingHold = true;
+				
+			} */
+			var objects = GameObject.FindGameObjectsWithTag("Grapple");
+			var objectCount = objects.Length;
+			foreach (var obj in objects) {
+				transform.position = Vector3.MoveTowards(transform.position,obj.transform.position);
+				Debug.Log("Moving from " + transform.position + " to " + obj.transform.position);
+			}
+		}
 	
 		if (Input.GetKeyDown (ShootArrow) || Input.GetKeyDown(ShootGrappleHook))
 		{
@@ -88,10 +109,9 @@ public class PlayerController : MonoBehaviour {
 			if (Input.GetKeyDown (ShootGrappleHook) && grappling == true)
 			{
 				//Remove current grapple
-				var objects = GameObject.FindGameObjectsWithTag("Grapple"); //Will need to add tag to arrows
+				var objects = GameObject.FindGameObjectsWithTag("Grapple");
 				var objectCount = objects.Length;
 				foreach (var obj in objects) {
-					// whatever
 					Destroy (obj);
 				}
 				grappling = false;
