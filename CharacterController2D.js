@@ -5,7 +5,7 @@ import System.Collections.Generic;
 
 
 [RequireComponent( typeof( BoxCollider2D ), typeof( Rigidbody2D ) )]
-public class CharacterController2D : MonoBehaviour
+public class CharacterController2D extends MonoBehaviour
 {
 	#region internal types
 
@@ -350,18 +350,18 @@ public class CharacterController2D : MonoBehaviour
 		// scale is slightly less so that we don't get trigger messages when colliding with non-triggers
 		go.transform.localScale = transform.localScale * triggerHelperBoxColliderScale;
 		
-		go.AddComponent<CC2DTriggerHelper>().setParentCharacterController( this );
+		go.AddComponent(CC2DTriggerHelper).setParentCharacterController( this );
 		
-		var rb = go.AddComponent<Rigidbody2D>();
+		var rb = go.AddComponent(Rigidbody2D);
 		rb.mass = 0f;
 		rb.gravityScale = 0f;
 		
-		var bc = go.AddComponent<BoxCollider2D>();
+		var bc = go.AddComponent(BoxCollider2D);
 		bc.size = boxCollider.size;
 		bc.isTrigger = true;
 		
-		var joint = go.AddComponent<DistanceJoint2D>();
-		joint.connectedBody = GetComponent<Rigidbody2D>();
+		var joint = go.AddComponent(DistanceJoint2D);
+		joint.connectedBody = GetComponent(Rigidbody2D);
 		joint.distance = 0f;
 		
 		return go;
@@ -407,7 +407,7 @@ public class CharacterController2D : MonoBehaviour
 	/// we have to increase the ray distance skinWidth then remember to remove skinWidth from deltaMovement before
 	/// actually moving the player
 	/// </summary>
-	private function moveHorizontally( ref Vector3 deltaMovement )
+	private function moveHorizontally( deltaMovement : Vector3  )
 	{
 		var isGoingRight = deltaMovement.x > 0;
 		var rayDistance = Mathf.Abs( deltaMovement.x ) + _skinWidth;
@@ -479,7 +479,7 @@ public class CharacterController2D : MonoBehaviour
 	/// <returns><c>true</c>, if horizontal slope was handled, <c>false</c> otherwise.</returns>
 	/// <param name="deltaMovement">Delta movement.</param>
 	/// <param name="angle">Angle.</param>
-	private boolean handleHorizontalSlope( ref Vector3 deltaMovement, angle : float  )
+	private boolean handleHorizontalSlope(  eltaMovement : Vector3 , angle : float  )
 	{
 		// disregard 90 degree angles (walls)
 		if( Mathf.RoundToInt( angle ) == 90 )
@@ -515,7 +515,7 @@ public class CharacterController2D : MonoBehaviour
 	}
 	
 	
-	private void moveVertically( ref Vector3 deltaMovement )
+	private void moveVertically( deltaMovement : Vector3  )
 	{
 		var isGoingUp = deltaMovement.y > 0;
 		var rayDistance = Mathf.Abs( deltaMovement.y ) + _skinWidth;
@@ -582,7 +582,7 @@ public class CharacterController2D : MonoBehaviour
 	/// the player stays grounded and the slopeSpeedModifier is taken into account to speed up movement.
 	/// </summary>
 	/// <param name="deltaMovement">Delta movement.</param>
-	private function handleVerticalSlope( ref Vector3 deltaMovement )
+	private function handleVerticalSlope( deltaMovement : Vector3  )
 	{
 		// slope check from the center of our collider
 		var centerOfCollider = ( _raycastOrigins.bottomLeft.x + _raycastOrigins.bottomRight.x ) * 0.5f;
