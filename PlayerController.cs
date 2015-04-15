@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour {
 	public int numberOfGrapples = 5;
 	public int numberOfArrows = 20;
 
+	public int grapplePullSpeed = 15;
+
 	private CharacterController2D _controller;
 	private Animator _animator;
 
@@ -98,8 +100,9 @@ public class PlayerController : MonoBehaviour {
 			var objects = GameObject.FindGameObjectsWithTag("Grapple");
 			var objectCount = objects.Length;
 			foreach (var obj in objects) {
-				transform.position = Vector3.MoveTowards(transform.position,obj.transform.position);
-				Debug.Log("Moving from " + transform.position + " to " + obj.transform.position);
+				//transform.position = Vector3.MoveTowards(transform.position,obj.transform.position,100);
+				transform.position = Vector3.MoveTowards(transform.position,obj.transform.position,(grapplePullSpeed * Time.deltaTime));
+				//Debug.Log("Moving from " + transform.position + " to " + obj.transform.position);
 			}
 		}
 	
