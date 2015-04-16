@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour {
 	
 	public bool grappling = false;
 	public bool grapplingHold = false;
+	
+	public LayerMask platformMask = 0;
 
 	List<GameObject> arrowList;
 	public GameObject ArrowPrefab;
@@ -86,23 +88,13 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 		
+		//Pulls player towards the grapple
 		if (Input.GetKey (GrapplePull)) 
 		{
-/* 			if (grapplingHold == true)
-			{
-				grapplingHold = false;
-			}
-			else
-			{
-				grapplingHold = true;
-				
-			} */
 			var objects = GameObject.FindGameObjectsWithTag("Grapple");
 			var objectCount = objects.Length;
 			foreach (var obj in objects) {
-				//transform.position = Vector3.MoveTowards(transform.position,obj.transform.position,100);
 				transform.position = Vector3.MoveTowards(transform.position,obj.transform.position,(grapplePullSpeed * Time.deltaTime));
-				//Debug.Log("Moving from " + transform.position + " to " + obj.transform.position);
 			}
 		}
 	
@@ -165,6 +157,31 @@ public class PlayerController : MonoBehaviour {
 			
 
 		}
+		
+		if (velocity.x > 0)
+		{
+			_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
+			Debug.DrawRay (_controller.topRight, velocity / 20, Color.blue, 2);
+			_raycastBottom = Physics2D.Raycast(_controller.bottomRight, velocity, 0.5f, platformMask);
+			Debug.DrawRay (_controller.bottomRight, velocity / 20, Color.blue, 2);
+			if (!_raycastTop && _raycastBottom)
+			{
+				transform.position = transform.position;
+				Debug.Log("Player holding Ledge");
+			}
+		}
+		else if (velocity.x < 0)
+		{
+			_raycastTop = Physics2D.Raycast(_controller.topLeft, velocity, 0.5f, platformMask);
+			Debug.DrawRay (_controller.topLeft, velocity / 20, Color.blue, 2);
+			_raycastBottom = Physics2D.Raycast(_controller.bottomLeft, velocity, 0.5f, platformMask);
+			Debug.DrawRay (_controller.bottomLeft, velocity / 20, Color.blue, 2);
+			if (!_raycastTop && _raycastBottom)
+			{
+				transform.position = transform.position;
+				Debug.Log("Player holding Ledge");
+			}
+		}
 
 		//Debug.Log (arrowList.Count);
 	
@@ -172,8 +189,6 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown (Jump) && _controller.isGrounded) 
 		{
 			var targetJumpHeight = jumpHeight;
-			velocity.y = Mathf.Sqrt(2f * targetJumpHeight * -gravity);
-			 
 
 		}
 
