@@ -32,8 +32,14 @@ public class PlayerController : MonoBehaviour {
 	
 	public LayerMask platformMask = 0;
 
+	private RaycastHit2D _raycastTop;
+	private RaycastHit2D _raycastBottom;
+
 	List<GameObject> arrowList;
 	public GameObject ArrowPrefab;
+
+	private float height = 0.5f;
+	private float width = 0.5f;
 
 	void Awake()
 	{
@@ -160,36 +166,56 @@ public class PlayerController : MonoBehaviour {
 		
 		if (velocity.x > 0)
 		{
-			_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
-			Debug.DrawRay (_controller.topRight, velocity / 20, Color.blue, 2);
-			_raycastBottom = Physics2D.Raycast(_controller.bottomRight, velocity, 0.5f, platformMask);
-			Debug.DrawRay (_controller.bottomRight, velocity / 20, Color.blue, 2);
+			_raycastTop = Physics2D.Raycast(new Vector3(transform.position.x+width, transform.position.y+height, transform.position.z), velocity, 10f, platformMask);
+			//_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
+			Debug.DrawRay (new Vector3(transform.position.x+width, transform.position.y+height, transform.position.z), velocity, Color.blue, 0.1f);
+			_raycastBottom = Physics2D.Raycast(new Vector3(transform.position.x+width, transform.position.y-height, transform.position.z), velocity, 10f, platformMask);
+			Debug.DrawRay (new Vector3(transform.position.x+width, transform.position.y-height, transform.position.z), velocity, Color.blue, 0.1f);
+			//Debug.Log(velocity);
 			if (!_raycastTop && _raycastBottom)
 			{
 				transform.position = transform.position;
 				Debug.Log("Player holding Ledge");
 			}
+			if (_raycastTop)
+			{
+				Debug.Log("Top");
+			}
+			if (_raycastBottom)
+			{
+				Debug.Log("Bottom");
+			}
 		}
 		else if (velocity.x < 0)
 		{
-			_raycastTop = Physics2D.Raycast(_controller.topLeft, velocity, 0.5f, platformMask);
-			Debug.DrawRay (_controller.topLeft, velocity / 20, Color.blue, 2);
-			_raycastBottom = Physics2D.Raycast(_controller.bottomLeft, velocity, 0.5f, platformMask);
-			Debug.DrawRay (_controller.bottomLeft, velocity / 20, Color.blue, 2);
+			_raycastTop = Physics2D.Raycast(new Vector3(transform.position.x-width, transform.position.y+height, transform.position.z), velocity, 10f, platformMask);
+			Debug.DrawRay (new Vector3(transform.position.x-width, transform.position.y+height, transform.position.z), velocity, Color.blue, 0.1f);
+			_raycastBottom = Physics2D.Raycast(new Vector3(transform.position.x-width, transform.position.y-height, transform.position.z), velocity, 10f, platformMask);
+			Debug.DrawRay (new Vector3(transform.position.x-width, transform.position.y-height, transform.position.z), velocity, Color.blue, 0.1f);
+
 			if (!_raycastTop && _raycastBottom)
 			{
 				transform.position = transform.position;
 				Debug.Log("Player holding Ledge");
+			}
+			if (_raycastTop)
+			{
+				Debug.Log("Top");
+			}
+			if (_raycastBottom)
+			{
+				Debug.Log("Bottom");
 			}
 		}
 
 		//Debug.Log (arrowList.Count);
 	
-
+		//Debug.Log (_controller.isGrounded.ToString ());
 		if (Input.GetKeyDown (Jump) && _controller.isGrounded) 
 		{
+			//Debug.Log("Jump");
 			var targetJumpHeight = jumpHeight;
-
+			velocity.y = Mathf.Sqrt(2f * targetJumpHeight * -gravity);
 		}
 
 		velocity.y += gravity * Time.deltaTime;
