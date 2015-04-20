@@ -34,6 +34,10 @@ public class PlayerController : MonoBehaviour {
 
 	private RaycastHit2D _raycastTop;
 	private RaycastHit2D _raycastBottom;
+	private Vector2 _topRight;
+	private Vector2 _topLeft;
+	private Vector2 _bottomRight;
+	private Vector2 _bottomLeft;
 
 	List<GameObject> arrowList;
 	public GameObject ArrowPrefab;
@@ -50,6 +54,12 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
 	{
+		_topRight = new Vector2(transform.position.x+width, transform.position.y+height);
+		_topLeft = new Vector2(transform.position.x-width, transform.position.y+height);
+		_bottomRight = new Vector2(transform.position.x+width, transform.position.y-height);
+		_bottomLeft = new Vector2(transform.position.x-width, transform.position.y-height);
+		
+		
 		//Debug.Log(name.ToString());
 		//Grabs current velocity of player
 		var velocity = _controller.velocity;
@@ -166,11 +176,13 @@ public class PlayerController : MonoBehaviour {
 		
 		if (velocity.x > 0)
 		{
-			_raycastTop = Physics2D.Raycast(new Vector3(transform.position.x+width, transform.position.y+height, transform.position.z), velocity, 10f, platformMask);
+			_raycastTop = Physics2D.Raycast(_topRight, _topRight + 10, 10f, platformMask);
 			//_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
-			Debug.DrawRay (new Vector3(transform.position.x+width, transform.position.y+height, transform.position.z), velocity, Color.blue, 0.1f);
-			_raycastBottom = Physics2D.Raycast(new Vector3(transform.position.x+width, transform.position.y-height, transform.position.z), velocity, 10f, platformMask);
-			Debug.DrawRay (new Vector3(transform.position.x+width, transform.position.y-height, transform.position.z), velocity, Color.blue, 0.1f);
+			Debug.DrawRay (_topRight, _topRight + 10, Color.blue, 0.1f);
+			
+			_raycastBottom = Physics2D.Raycast(_bottomRight, _bottomRight + 10, 10f, platformMask);
+			Debug.DrawRay (_bottomRight, _bottomRight + 10, Color.blue, 0.1f);
+			
 			//Debug.Log(velocity);
 			if (!_raycastTop && _raycastBottom)
 			{
@@ -179,19 +191,20 @@ public class PlayerController : MonoBehaviour {
 			}
 			if (_raycastTop)
 			{
-				Debug.Log("Top");
+				Debug.Log("_raycastTop Right");
 			}
 			if (_raycastBottom)
 			{
-				Debug.Log("Bottom");
+				Debug.Log("_raycastBottom Right");
 			}
 		}
 		else if (velocity.x < 0)
 		{
-			_raycastTop = Physics2D.Raycast(new Vector3(transform.position.x-width, transform.position.y+height, transform.position.z), velocity, 10f, platformMask);
-			Debug.DrawRay (new Vector3(transform.position.x-width, transform.position.y+height, transform.position.z), velocity, Color.blue, 0.1f);
-			_raycastBottom = Physics2D.Raycast(new Vector3(transform.position.x-width, transform.position.y-height, transform.position.z), velocity, 10f, platformMask);
-			Debug.DrawRay (new Vector3(transform.position.x-width, transform.position.y-height, transform.position.z), velocity, Color.blue, 0.1f);
+			_raycastTop = Physics2D.Raycast(_topLeft, _topLeft - 10, 10f, platformMask);
+			Debug.DrawRay (_topLeft, _topLeft - 10, Color.blue, 0.1f);
+			
+			_raycastBottom = Physics2D.Raycast(_bottomLeft, _bottomLeft.x - 10, 10f, platformMask);
+			Debug.DrawRay (_bottomLeft, _bottomLeft.x - 10, Color.blue, 0.1f);
 
 			if (!_raycastTop && _raycastBottom)
 			{
@@ -200,11 +213,11 @@ public class PlayerController : MonoBehaviour {
 			}
 			if (_raycastTop)
 			{
-				Debug.Log("Top");
+				Debug.Log("_raycastTop Left");
 			}
 			if (_raycastBottom)
 			{
-				Debug.Log("Bottom");
+				Debug.Log("_raycastBottom Left");
 			}
 		}
 
