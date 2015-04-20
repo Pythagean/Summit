@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	public KeyCode Left = KeyCode.A;
 	public KeyCode Right = KeyCode.D;
 	public KeyCode Jump = KeyCode.W;
+	public KeyCode Down = KeyCode.S;
 	public KeyCode ShootArrow = KeyCode.Mouse0;
 	public KeyCode ShootGrappleHook = KeyCode.Mouse1;
 	public KeyCode GrapplePull = KeyCode.Q;
@@ -27,8 +28,9 @@ public class PlayerController : MonoBehaviour {
 
 	private RaycastHit2D _raycastHitGrapple;
 	
-	public bool grappling = false;
-	public bool grapplingHold = false;
+	private bool grappling = false;
+	private bool grapplingHold = false;
+	private bool holdingLedge = false;
 	
 	public LayerMask platformMask = 0;
 
@@ -71,12 +73,12 @@ public class PlayerController : MonoBehaviour {
 				velocity.y = 0;
 
 		//Horizontal Input
-		if (Input.GetKey (Right)) 
+		if (Input.GetKey (Right) && holdingLedge == false) 
 		{
 			velocity.x = runSpeed;
 			//goRight();
 		}
-		else if( Input.GetKey(Left))
+		else if( Input.GetKey(Left) && holdingLedge == false)
 		{
 			velocity.x = -runSpeed;
 			//goLeft();
@@ -174,7 +176,21 @@ public class PlayerController : MonoBehaviour {
 
 		}
 		
-		if (velocity.x > 0)
+		if (holdingLedge)
+		{
+			velocity = Vector3.zero;
+			if (Input.GetKey (Jump))
+			{
+				Debug.Log("Jumping up from Ledge");
+			}
+			else if (Input.GetKey (Down))
+			{
+				Debug.Log("Dropping down from Ledge");
+				holdingLedge = false;
+			}
+		}
+		
+		if (velocity.x > 0 && holdingLedge == false)
 		{
 			_raycastTop = Physics2D.Raycast(_topRight, velocity, 1f, platformMask);
 			//_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
@@ -186,22 +202,16 @@ public class PlayerController : MonoBehaviour {
 			//Debug.Log(velocity);
 			if (!_raycastTop && _raycastBottom)
 			{
-				GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-				GetComponent<Rigidbody2D>().gravityScale = 0;
-				GetComponent<Rigidbody2D>().isKinematic = false;
-				velocity = Vector3.zero;
-				Debug.Log("Player holding Ledge");
+				//GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+				//GetComponent<Rigidbody2D>().gravityScale = 0;
+				//GetComponent<Rigidbody2D>().isKinematic = false;
+				//velocity = Vector3.zero;
+				//Debug.Log("Player holding Ledge");
+				holdingLedge = true;
 			}
-//			if (_raycastTop)
-//			{
-//				Debug.Log("_raycastTop Right");
-//			}
-//			if (_raycastBottom)
-//			{
-//				Debug.Log("_raycastBottom Right");
-//			}
+
 		}
-		else if (velocity.x < 0)
+		else if (velocity.x < 0 && holdingLedge == false)
 		{
 			_raycastTop = Physics2D.Raycast(_topLeft, velocity, 1f, platformMask);
 			Debug.DrawRay (_topLeft, velocity/20, Color.blue, 0.1f);
@@ -211,20 +221,13 @@ public class PlayerController : MonoBehaviour {
 
 			if (!_raycastTop && _raycastBottom)
 			{
-				GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+				/* GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 				GetComponent<Rigidbody2D>().gravityScale = 0;
 				GetComponent<Rigidbody2D>().isKinematic = false;
 				velocity = Vector3.zero;
-				Debug.Log("Player holding Ledge");
+				Debug.Log("Player holding Ledge"); */
+				holdingLedge = true;
 			}
-//			if (_raycastTop)
-//			{
-//				Debug.Log("_raycastTop Left");
-//			}
-//			if (_raycastBottom)
-//			{
-//				Debug.Log("_raycastBottom Left");
-//			}
 		}
 
 		//Debug.Log (arrowList.Count);
