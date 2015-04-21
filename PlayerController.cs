@@ -182,6 +182,10 @@ public class PlayerController : MonoBehaviour {
 			if (Input.GetKey (Jump))
 			{
 				Debug.Log("Jumping up from Ledge");
+				var targetJumpHeight = jumpHeight;
+
+				velocity.y = Mathf.Sqrt(2f * targetJumpHeight * -gravity);
+				holdingLedge = false;
 			}
 			else if (Input.GetKey (Down))
 			{
@@ -192,11 +196,11 @@ public class PlayerController : MonoBehaviour {
 		
 		if (velocity.x > 0 && holdingLedge == false)
 		{
-			_raycastTop = Physics2D.Raycast(_topRight, velocity, 1f, platformMask);
+			_raycastTop = Physics2D.Raycast(_topRight, velocity, 0.1f, platformMask);
 			//_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
 			Debug.DrawRay (_topRight, velocity/20, Color.blue, 0.1f);
 			
-			_raycastBottom = Physics2D.Raycast(_bottomRight, velocity, 1f, platformMask);
+			_raycastBottom = Physics2D.Raycast(_bottomRight, velocity, 0.1f, platformMask);
 			Debug.DrawRay (_bottomRight, velocity/20, Color.blue, 0.1f);
 			
 			//Debug.Log(velocity);
