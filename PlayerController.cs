@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour {
 		
 		if (holdingLedge)
 		{
-			_controller.isGrounded = true;
+			//_controller.isGrounded = true;
 			velocity = Vector3.zero;
 			if (Input.GetKey (Jump))
 			{
@@ -196,35 +196,52 @@ public class PlayerController : MonoBehaviour {
 		}
 		
 		//Check for holding ledge
-		if (velocity.x > 0 && holdingLedge == false)
+		if (holdingLedge == false)
 		{
-			_raycastTop = Physics2D.Raycast(_topRight, new Vector2(velocity.x,0), 0.1f, platformMask);
-			//_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
-			Debug.DrawRay (_topRight, new Vector2(velocity.x,0), Color.blue, 0.1f);
-			
-			_raycastBottom = Physics2D.Raycast(_bottomRight, new Vector2(velocity.x,0), 0.1f, platformMask);
-			Debug.DrawRay (_bottomRight, new Vector2(velocity.x,0), Color.blue, 0.1f);
-			
-			//Debug.Log(velocity);
-			if (!_raycastTop && _raycastBottom)
+			if (velocity.x < 0)
 			{
-				holdingLedge = true;
+				_raycastTop = Physics2D.Raycast(_topLeft, new Vector2(velocity.x,0), 1f, platformMask);
+							Debug.DrawRay (_topLeft, new Vector2(velocity.x,0), Color.blue, 0.1f);
+							
+							_raycastBottom = Physics2D.Raycast(_bottomLeft, new Vector2(velocity.x,0), 1f, platformMask);
+							Debug.DrawRay (_bottomLeft, new Vector2(velocity.x,0), Color.blue, 0.1f);
+
+							if (!_raycastTop && _raycastBottom)
+							{
+								holdingLedge = true;
+							}
+			}
+			else if (velocity.x > 0)
+			{
+				_raycastTop = Physics2D.Raycast(_topRight, new Vector2(velocity.x,0), 0.1f, platformMask);
+				//_raycastTop = Physics2D.Raycast(_controller.topRight, velocity, 0.5f, platformMask);
+				Debug.DrawRay (_topRight, new Vector2(velocity.x,0), Color.blue, 0.1f);
+				
+				_raycastBottom = Physics2D.Raycast(_bottomRight, new Vector2(velocity.x,0), 0.1f, platformMask);
+				Debug.DrawRay (_bottomRight, new Vector2(velocity.x,0), Color.blue, 0.1f);
+				
+				//Debug.Log(velocity);
+				if (!_raycastTop && _raycastBottom)
+				{
+					holdingLedge = true;
+				}
 			}
 
-		}
-		else if (velocity.x < 0 && holdingLedge == false)
-		{
-			_raycastTop = Physics2D.Raycast(_topLeft, new Vector2(velocity.x,0), 1f, platformMask);
-			Debug.DrawRay (_topLeft, new Vector2(velocity.x,0), Color.blue, 0.1f);
-			
-			_raycastBottom = Physics2D.Raycast(_bottomLeft, new Vector2(velocity.x,0), 1f, platformMask);
-			Debug.DrawRay (_bottomLeft, new Vector2(velocity.x,0), Color.blue, 0.1f);
 
-			if (!_raycastTop && _raycastBottom)
-			{
-				holdingLedge = true;
-			}
 		}
+//		else if (velocity.x < 0 && holdingLedge == false)
+//		{
+//			_raycastTop = Physics2D.Raycast(_topLeft, new Vector2(velocity.x,0), 1f, platformMask);
+//			Debug.DrawRay (_topLeft, new Vector2(velocity.x,0), Color.blue, 0.1f);
+//			
+//			_raycastBottom = Physics2D.Raycast(_bottomLeft, new Vector2(velocity.x,0), 1f, platformMask);
+//			Debug.DrawRay (_bottomLeft, new Vector2(velocity.x,0), Color.blue, 0.1f);
+//
+//			if (!_raycastTop && _raycastBottom)
+//			{
+//				holdingLedge = true;
+//			}
+//		}
 
 		//Debug.Log (arrowList.Count);
 	
